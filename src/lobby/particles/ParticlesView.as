@@ -11,7 +11,7 @@ package lobby.particles {
 		
 		public var spriteContainer:SpriteVisualElement;
 		
-		private var _testSprite:Sprite;
+		private var _testSprite:SparklerDemo;
 		
 		public function ParticlesView() {
 			
@@ -21,11 +21,18 @@ package lobby.particles {
 		
 		public function init():void {
 			
+			/*
 			_testSprite = new Sprite();
 			
 			_testSprite.graphics.beginFill( 0xff00ff );
 			_testSprite.graphics.drawRect( 0, 0, 300, 300 );
 			_testSprite.graphics.endFill();
+			
+			spriteContainer.addChild( _testSprite );
+			*/
+			
+			_testSprite = new SparklerDemo();
+			_testSprite.setupSparkler();
 			
 			spriteContainer.addChild( _testSprite );
 			
