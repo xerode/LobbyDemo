@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<particles:ParticlesView
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:lobby="lobby.*" xmlns:particles="lobby.particles.*">
+	<s:VGroup>
+		<s:HGroup>
+			<s:Button label="Start"/>
+			<s:Button label="Stop"/>
+			<s:Button label="Reset"/>
+		</s:HGroup>
+		<s:SpriteVisualElement id="spriteContainer" />
+	</s:VGroup>
+</particles:ParticlesView>
