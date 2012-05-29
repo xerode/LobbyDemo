@@ -22,7 +22,7 @@ package lobby.particles {
 	public class SparklerSprite extends Emitter2D {
 		
 		public function SparklerSprite( renderer:DisplayObject ) {
-			counter = new Steady( 150 );
+			counter = new Steady( 1500 );
 			  
 			addInitializer( new SharedImage( new Line( 8 ) ) );
 			addInitializer( new ColorInit( 0xFFFFCC00, 0xFFFFCC00 ) );
@@ -33,7 +33,7 @@ package lobby.particles {
 			addAction( new Move() );
 			addAction( new RotateToDirection() );
 			  
-			addActivity( new FollowMouse( renderer ) );
+			// addActivity( new FollowMouse( renderer ) );
 		}
 		
 	}

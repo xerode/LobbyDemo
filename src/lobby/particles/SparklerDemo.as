@@ -19,14 +19,22 @@ package lobby.particles {
 		}
 		
 		public function setupSparkler():void {
-			var renderer:BitmapRenderer = new BitmapRenderer( new Rectangle( 0, 0, 400, 400 ) );
+			var renderer:BitmapRenderer = new BitmapRenderer( new Rectangle( 0, 0, 640, 480 ) );
 			renderer.addFilter( new BlurFilter( 2, 2, 1 ) );
 			renderer.addFilter( new ColorMatrixFilter( [ 1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0.95,0 ] ) );
 			addChild( renderer );
 			      
 			_emitter = new SparklerSprite( renderer );
 			renderer.addEmitter( _emitter );
-			_emitter.start( );
+			_emitter.start();
+		}
+
+		public function get emitter() : Emitter2D {
+			return _emitter;
+		}
+
+		public function set emitter(emitter : Emitter2D) : void {
+			_emitter = emitter;
 		}
 	}
 }

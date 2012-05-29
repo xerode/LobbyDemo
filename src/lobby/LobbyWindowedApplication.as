@@ -1,4 +1,5 @@
 package lobby {
+	import lobby.particles.ParticlesContainer;
 	import mx.events.ResizeEvent;
 	import spark.components.Button;
 	import spark.components.WindowedApplication;
@@ -21,9 +22,11 @@ package lobby {
 		
 		public var fullscreenButton:Button;
 		
+		public var particles:ParticlesContainer;
+		
 		public function LobbyWindowedApplication() {
 			
-			this.addEventListener(AIREvent.WINDOW_COMPLETE, onWindowComplete );
+			this.addEventListener( AIREvent.WINDOW_COMPLETE, onWindowComplete );
 			
 		}
 		
