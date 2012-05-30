@@ -1,5 +1,7 @@
 package lobby.particles {
 	
+	import lobby.states.AState;
+	import lobby.states.StateManager;
 	import uk.co.soulwire.cv.MotionTracker;
 	import spark.core.SpriteVisualElement;
 	import mx.events.FlexEvent;
@@ -31,9 +33,31 @@ package lobby.particles {
 		
 		private var _motionTracker:MotionTracker;
 		
+		private var _stateManager:StateManager = new StateManager();
+		private var _currentState:AState;
+		
 		public function ParticlesView() {
 			
 			this.addEventListener( FlexEvent.CREATION_COMPLETE, onCreationComplete );
+			
+		}
+		
+		public function setState( s:String ):void {
+			
+			if( _currentState ) {
+				spriteContainer.removeChild( _currentState );
+				_currentState.destroy();
+				// _currentState = null;
+			}
+			
+			var ns:AState = _stateManager.getState( s );
+			
+			ns.setFather( this );
+			ns.create();
+			
+			_currentState = ns;
+			
+			spriteContainer.addChild( _currentState );
 			
 		}
 		
@@ -46,10 +70,14 @@ package lobby.particles {
 		
 		public function initSparkler():void {
 			
+			/*
 			_sparkler = new SparklerDemo();
 			_sparkler.setupSparkler();
 			
 			spriteContainer.addChild( _sparkler );
+			*/
+			
+			setState( "lobby.particles.SparklerDemo" );
 			
 		}
 		
@@ -116,8 +144,10 @@ package lobby.particles {
 			// Tell the MotionTracker to update itself
 			_motionTracker.track();
 			
-			_sparkler.emitter.x += ( _motionTracker.x - _sparkler.emitter.x ) / 5;
-			_sparkler.emitter.y += ( _motionTracker.y - _sparkler.emitter.y ) / 5;
+			var sparkle:SparklerDemo = _currentState as SparklerDemo;
+			
+			sparkle.emitter.x += ( _motionTracker.x - sparkle.emitter.x ) / 5;
+			sparkle.emitter.y += ( _motionTracker.y - sparkle.emitter.y ) / 5;
 			
 			/*
 			// Move the target with some easing

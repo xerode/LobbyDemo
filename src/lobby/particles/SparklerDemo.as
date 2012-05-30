@@ -1,9 +1,9 @@
 package lobby.particles {
 	
+	import lobby.states.AState;
 	import org.flintparticles.twoD.emitters.Emitter2D;
 	import org.flintparticles.twoD.renderers.BitmapRenderer;
-		
-	import flash.display.Sprite;
+	
 	import flash.filters.BlurFilter;
 	import flash.filters.ColorMatrixFilter;
 	import flash.geom.Rectangle;
@@ -11,14 +11,14 @@ package lobby.particles {
 	/**
 	 * @author xerode
 	 */
-	public class SparklerDemo extends Sprite {
+	public class SparklerDemo extends AState {
 		
 		private var _emitter:Emitter2D;
 		
 		public function SparklerDemo() {
 		}
 		
-		public function setupSparkler():void {
+		override public function create():void {
 			var renderer:BitmapRenderer = new BitmapRenderer( new Rectangle( 0, 0, 640, 480 ) );
 			renderer.addFilter( new BlurFilter( 2, 2, 1 ) );
 			renderer.addFilter( new ColorMatrixFilter( [ 1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0.95,0 ] ) );
