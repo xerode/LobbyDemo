@@ -8,7 +8,6 @@ package lobby.particles {
 	import org.flintparticles.common.initializers.SharedImage;
 	import org.flintparticles.twoD.actions.Move;
 	import org.flintparticles.twoD.actions.RotateToDirection;
-	import org.flintparticles.twoD.activities.FollowMouse;
 	import org.flintparticles.twoD.emitters.Emitter2D;
 	import org.flintparticles.twoD.initializers.Velocity;
 	import org.flintparticles.twoD.zones.DiscZone;
@@ -33,7 +32,6 @@ package lobby.particles {
 			addAction( new Move() );
 			addAction( new RotateToDirection() );
 			  
-			// addActivity( new FollowMouse( renderer ) );
 		}
 		
 	}

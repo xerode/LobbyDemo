@@ -26,7 +26,19 @@ package lobby.particles {
 			      
 			_emitter = new SparklerSprite( renderer );
 			renderer.addEmitter( _emitter );
+		}
+		
+		override public function start():void {
 			_emitter.start();
+		}
+		
+		override public function stop():void {
+			_emitter.stop();
+		}
+		
+		override public function update():void {
+			_emitter.x += ( _currentUserInput.x - _emitter.x ) / 5;
+			_emitter.y += ( _currentUserInput.y - _emitter.y ) / 5;
 		}
 
 		public function get emitter() : Emitter2D {

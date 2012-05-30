@@ -4,10 +4,6 @@ package lobby.states {
 	 */
 	public interface IState {
 		
-		function setFather( o:Object ):void;
-		
-		function getFather():Object;
-		
 		function create():void;
 		
 		function destroy():void;
@@ -15,6 +11,14 @@ package lobby.states {
 		function start():void;
 		
 		function stop():void;
+		
+		function update():void;
+		
+		function setFather( o:Object ):void;
+		
+		function getFather():Object;
+		
+		function setUserInput( nx:Number, ny:Number ):void;
 		
 	}
 }

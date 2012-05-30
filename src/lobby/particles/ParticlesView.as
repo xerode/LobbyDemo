@@ -1,5 +1,6 @@
 package lobby.particles {
 	
+	import lobby.states.StateLibrary;
 	import lobby.states.AState;
 	import lobby.states.StateManager;
 	import uk.co.soulwire.cv.MotionTracker;
@@ -9,10 +10,7 @@ package lobby.particles {
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-	import flash.display.Shape;
-	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.filters.ColorMatrixFilter;
 	import flash.media.Camera;
 	import flash.media.Video;
 
@@ -23,11 +21,6 @@ package lobby.particles {
 		
 		public var spriteContainer:SpriteVisualElement;
 		
-		private var _sparkler:SparklerDemo;
-		
-		private var _target : Shape;
-		private var _bounds : Shape;
-		private var _output : Bitmap;
 		private var _source : Bitmap;
 		private var _video : BitmapData;
 		
@@ -45,9 +38,10 @@ package lobby.particles {
 		public function setState( s:String ):void {
 			
 			if( _currentState ) {
+				_currentState.stop();
 				spriteContainer.removeChild( _currentState );
 				_currentState.destroy();
-				// _currentState = null;
+				_currentState = null;
 			}
 			
 			var ns:AState = _stateManager.getState( s );
@@ -59,23 +53,20 @@ package lobby.particles {
 			
 			spriteContainer.addChild( _currentState );
 			
+			_currentState.start();
+			
 		}
 		
 		public function init():void {
 			
+			StateLibrary.touch();
+			
 			initCamera();
-			initSparkler();
+			initParticles();
 			
 		}
 		
-		public function initSparkler():void {
-			
-			/*
-			_sparkler = new SparklerDemo();
-			_sparkler.setupSparkler();
-			
-			spriteContainer.addChild( _sparkler );
-			*/
+		public function initParticles():void {
 			
 			setState( "lobby.particles.SparklerDemo" );
 			
@@ -107,26 +98,6 @@ package lobby.particles {
 			_source.x = camW;
 			spriteContainer.addChild(_source);
 			
-			/*
-			// Show the image the MotionTracker is processing and using to track
-			_output = new Bitmap(_motionTracker.trackingImage);
-			_output.x = camW + 20;
-			_output.y = 10;
-			spriteContainer.addChild(_output);
-			
-			// A shape to represent the tracking point
-			_target = new Shape();
-			_target.graphics.lineStyle(0, 0xFFFFFF);
-			_target.graphics.drawCircle(0, 0, 10);
-			spriteContainer.addChild(_target);
-			
-			// A box to represent the activity area
-			_bounds = new Shape();
-			_bounds.x = _output.x;
-			_bounds.y = _output.y;
-			spriteContainer.addChild(_bounds);
-			*/
-			
 			spriteContainer.addEventListener( Event.ENTER_FRAME, onFrame );
 			
 		}
@@ -144,28 +115,15 @@ package lobby.particles {
 			// Tell the MotionTracker to update itself
 			_motionTracker.track();
 			
-			var sparkle:SparklerDemo = _currentState as SparklerDemo;
+			// Pushes MotionTracker values to currentState, update currentState
+			_currentState.setUserInput( _motionTracker.x, _motionTracker.y );
+			_currentState.update();
 			
-			sparkle.emitter.x += ( _motionTracker.x - sparkle.emitter.x ) / 5;
-			sparkle.emitter.y += ( _motionTracker.y - sparkle.emitter.y ) / 5;
-			
-			/*
-			// Move the target with some easing
-			_target.x += ((_motionTracker.x + _bounds.x) - _target.x) / 10;
-			_target.y += ((_motionTracker.y + _bounds.y) - _target.y) / 10;
-			*/
-			
-			_video.draw(_motionTracker.input);
+			_video.draw( _motionTracker.input );
 			
 			// If there is enough movement (see the MotionTracker's minArea property) then continue
 			if ( !_motionTracker.hasMovement ) return;
 			
-			/*
-			// Draw the motion bounds so we can see what the MotionTracker is doing
-			_bounds.graphics.clear();
-			_bounds.graphics.lineStyle(0, 0xFFFFFF);
-			_bounds.graphics.drawRect(_motionTracker.motionArea.x, _motionTracker.motionArea.y, _motionTracker.motionArea.width, _motionTracker.motionArea.height);
-			*/
 		}
 	
 	}
