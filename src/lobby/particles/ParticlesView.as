@@ -1,23 +1,31 @@
 package lobby.particles {
-	
-	import lobby.states.StateLibrary;
 	import lobby.states.AState;
+	import lobby.states.StateLibrary;
 	import lobby.states.StateManager;
-	import uk.co.soulwire.cv.MotionTracker;
-	import spark.core.SpriteVisualElement;
-	import mx.events.FlexEvent;
+
 	import spark.components.Group;
-	
+	import spark.core.SpriteVisualElement;
+
+	import uk.co.soulwire.cv.MotionTracker;
+
+	import mx.events.FlexEvent;
+
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.events.Event;
+	import flash.events.TimerEvent;
 	import flash.media.Camera;
 	import flash.media.Video;
+	import flash.utils.Timer;
+	
 
 	/**
 	 * @author xerode
 	 */
 	public class ParticlesView extends Group {
+		
+		private var _stateManager:StateManager = new StateManager();
+		private var _currentState:AState;
 		
 		public var spriteContainer:SpriteVisualElement;
 		
@@ -26,8 +34,10 @@ package lobby.particles {
 		
 		private var _motionTracker:MotionTracker;
 		
-		private var _stateManager:StateManager = new StateManager();
-		private var _currentState:AState;
+		private var _timer:Timer;
+		public const TIMER_TICK:uint = 30000;
+		
+		private var _isPlaying:Boolean;
 		
 		public function ParticlesView() {
 			
@@ -35,7 +45,7 @@ package lobby.particles {
 			
 		}
 		
-		public function setState( s:String ):void {
+		public function setState( s:AState ):void {
 			
 			if( _currentState ) {
 				_currentState.stop();
@@ -44,12 +54,10 @@ package lobby.particles {
 				_currentState = null;
 			}
 			
-			var ns:AState = _stateManager.getState( s );
+			s.setFather( this );
+			s.create();
 			
-			ns.setFather( this );
-			ns.create();
-			
-			_currentState = ns;
+			_currentState = s;
 			
 			spriteContainer.addChild( _currentState );
 			
@@ -64,11 +72,7 @@ package lobby.particles {
 			initCamera();
 			initParticles();
 			
-		}
-		
-		public function initParticles():void {
-			
-			setState( "lobby.particles.SparklerDemo" );
+			start();
 			
 		}
 		
@@ -79,26 +83,61 @@ package lobby.particles {
 
 			// Create the camera
 			var cam : Camera = Camera.getCamera();
-			cam.setMode(camW, camH, 60 );
 			
-			// Create a video
-			var vid : Video = new Video(camW, camH);
-			vid.attachCamera(cam);
 			
-			// Create the Motion Tracker
-			_motionTracker = new MotionTracker(vid);
+			if( cam ) {
+				
+				cam.setMode(camW, camH, 60 );
 			
-			// We flip the input as we want a mirror image
-			_motionTracker.flipInput = true;
+				// Create a video
+				var vid : Video = new Video(camW, camH);
+				vid.smoothing = true;
+				vid.attachCamera(cam);
+				
+				// Create the Motion Tracker
+				_motionTracker = new MotionTracker(vid);
+				
+				// We flip the input as we want a mirror image
+				_motionTracker.flipInput = true;
+				
+				// Display the camera input with the same filters (minus the blur) as the MotionTracker is using
+				_video = new BitmapData(camW, camH, false, 0);
+				_source = new Bitmap(_video);
+				_source.scaleX = -1;
+				_source.x = camW;
+				spriteContainer.addChild(_source);
+				
+			}
 			
-			// Display the camera input with the same filters (minus the blur) as the MotionTracker is using
-			_video = new BitmapData(camW, camH, false, 0);
-			_source = new Bitmap(_video);
-			_source.scaleX = -1;
-			_source.x = camW;
-			spriteContainer.addChild(_source);
+		}
+		
+		public function initParticles():void {
+			
+			setState( _stateManager.getStateByName( _stateManager.STATES[ 0 ] ) );
+			
+		}
+		
+		public function start():void {
+			
+			_timer = new Timer( TIMER_TICK );
+			_timer.addEventListener( TimerEvent.TIMER, onTimer );
+			_timer.start();
+			
+			_isPlaying = true;
 			
 			spriteContainer.addEventListener( Event.ENTER_FRAME, onFrame );
+			
+		}
+		
+		public function stop():void {
+			
+			spriteContainer.removeEventListener( Event.ENTER_FRAME, onFrame );
+			
+			_isPlaying = false;
+			
+			_timer.stop();
+			_timer.removeEventListener( TimerEvent.TIMER, onTimer );
+			_timer = null;
 			
 		}
 
@@ -123,7 +162,18 @@ package lobby.particles {
 			
 			// If there is enough movement (see the MotionTracker's minArea property) then continue
 			if ( !_motionTracker.hasMovement ) return;
+		}
+		
+		private function onTimer(event : TimerEvent) : void {
 			
+			trace( "change timer" );
+			
+			setState( _stateManager.getNextState() );
+			
+		}
+
+		public function get isPlaying() : Boolean {
+			return _isPlaying;
 		}
 	
 	}

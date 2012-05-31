@@ -18,9 +18,9 @@ package lobby.particles {
 	/**
 	 * @author xerode
 	 */
-	public class SparklerSprite extends Emitter2D {
+	public class SparklerEmitter extends Emitter2D {
 		
-		public function SparklerSprite( renderer:DisplayObject ) {
+		public function SparklerEmitter() {
 			counter = new Steady( 1500 );
 			  
 			addInitializer( new SharedImage( new Line( 8 ) ) );

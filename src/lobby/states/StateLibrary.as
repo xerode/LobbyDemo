@@ -1,4 +1,5 @@
 package lobby.states {
+	import lobby.particles.GravityDemo;
 	import lobby.particles.SparklerDemo;
 	/**
 	 * @author xerode
@@ -7,7 +8,13 @@ package lobby.states {
 		
 		public static function touch():void {
 			
-			var ci:* = new SparklerDemo();
+			var ci:*;
+			
+			ci = new SparklerDemo();
+			
+			ci = null;
+			
+			ci = new GravityDemo();
 			
 			ci = null;
 			
