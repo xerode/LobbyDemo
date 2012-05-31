@@ -26,6 +26,8 @@ package lobby.particles {
 			addChild( _renderer );
 			      
 			_emitter = new SparklerEmitter();
+			_emitter.x = _currentUserInput.x;
+			_emitter.y = _currentUserInput.y;
 			_renderer.addEmitter( _emitter );
 		}
 		

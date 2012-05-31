@@ -1,4 +1,6 @@
 package lobby.particles {
+	import com.greensock.TweenMax;
+	import com.greensock.easing.*;
 	import lobby.states.AState;
 	import lobby.states.StateLibrary;
 	import lobby.states.StateManager;
@@ -37,7 +39,7 @@ package lobby.particles {
 		private var _timer:Timer;
 		public const TIMER_TICK:uint = 30000;
 		
-		private var _isPlaying:Boolean;
+		private var _isPlaying : Boolean;
 		
 		public function ParticlesView() {
 			
@@ -49,9 +51,7 @@ package lobby.particles {
 			
 			if( _currentState ) {
 				_currentState.stop();
-				spriteContainer.removeChild( _currentState );
-				_currentState.destroy();
-				_currentState = null;
+				TweenMax.to( _currentState, 1, { autoAlpha: 0, ease: Expo.easeIn, onComplete: onStateTweenOutComplete, onCompleteParams: [ _currentState ] } );
 			}
 			
 			s.setFather( this );
@@ -62,6 +62,8 @@ package lobby.particles {
 			spriteContainer.addChild( _currentState );
 			
 			_currentState.start();
+			
+			TweenMax.to( _currentState, 1, { autoAlpha: 1, ease: Expo.easeIn } );
 			
 		}
 		
@@ -170,6 +172,13 @@ package lobby.particles {
 			
 			setState( _stateManager.getNextState() );
 			
+		}
+		
+		private function onStateTweenOutComplete( s:AState ):void {
+			s.stop();
+			spriteContainer.removeChild( s );
+			s.destroy();
+			s = null;
 		}
 
 		public function get isPlaying() : Boolean {
